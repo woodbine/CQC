@@ -10,9 +10,22 @@ import csv
 import re
 
 
+def connect(url):
+    report_soup = ''
+    try:
+        report_html = urllib2.urlopen(url)
+        report_soup = BeautifulSoup(report_html, 'lxml')
+    except:
+        connect(url)
+    if not report_soup:
+        connect(url)
+    else:
+        return report_soup
+
 directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
-html = urllib2.urlopen(directoryUrl)
-soup = BeautifulSoup(html, 'lxml')
+# html = urllib2.urlopen(directoryUrl)
+# soup = BeautifulSoup(html)
+soup = connect(directoryUrl)
 
 block = soup.find('div',{'id':'directory'})
 csvA = block.find('a',href=True)
@@ -38,11 +51,13 @@ for row in csv_file:
     services = row[8]
     local_authority = row[11]
     print name, location_url
-    report_html = urllib2.urlopen(location_url)
-    report_soup = BeautifulSoup(report_html, 'lxml')
+    # report_html = urllib2.urlopen(location_url)
+    # report_soup = BeautifulSoup(report_html)
+    report_soup = connect(location_url)
     latest_report_url = location_url+'/reports'
-    latest_report_html = urllib2.urlopen(latest_report_url)
-    latest_report_soup = BeautifulSoup(latest_report_html, 'lxml')
+    latest_report_soup = connect(latest_report_url)
+    # latest_report_html = urllib2.urlopen(latest_report_url)
+    # latest_report_soup = BeautifulSoup(latest_report_html)
     latest_report = ''
     try:
         latest_report = latest_report_soup.find('h2', text=re.compile('Reports')).find_next('div').text.strip()
@@ -99,7 +114,7 @@ for row in csv_file:
         pass
     overview_well_led = ''
     try:
-        overview_well_led = report_soup.find('a', text=re.compile('Well_led')).find_next('span').text.strip()
+        overview_well_led = report_soup.find('a', text=re.compile('Well-led')).find_next('span').text.strip()
     except:
         pass
     run_by = ''
@@ -119,8 +134,9 @@ for row in csv_file:
         pass
     overview_summary = ''
     if overview_summary_url:
-        overview_summary_page = urllib2.urlopen(overview_summary_url)
-        overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
+        # overview_summary_page = urllib2.urlopen(overview_summary_url)
+        # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
+        overview_summary_soup = connect(overview_summary_url)
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
@@ -129,8 +145,9 @@ for row in csv_file:
         pass
     summary_safe = ''
     if summary_safe_url:
-        summary_safe_page = urllib2.urlopen(summary_safe_url)
-        summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
+        # summary_safe_page = urllib2.urlopen(summary_safe_url)
+        # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
+        summary_safe_soup = connect(summary_safe_url)
         summary_safe = summary_safe_soup.find('h2', text=re.compile('Safe')).find_next('div').text.strip()
     summary_effective_url = ''
     try:
@@ -140,8 +157,9 @@ for row in csv_file:
     print summary_effective_url
     summary_effective = ''
     if summary_effective_url:
-        summary_effective_page = urllib2.urlopen(summary_effective_url)
-        summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
+        # summary_effective_page = urllib2.urlopen(summary_effective_url)
+        # summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
+        summary_effective_soup =connect(summary_effective_url)
         summary_effective = summary_effective_soup.find('h2', text=re.compile('Effective')).find_next('div').text.strip()
 
     summary_caring_url = ''
@@ -153,8 +171,9 @@ for row in csv_file:
         pass
     summary_caring = ''
     if summary_caring_url:
-        summary_caring_page = urllib2.urlopen(summary_caring_url)
-        summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
+        # summary_caring_page = urllib2.urlopen(summary_caring_url)
+        # summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
+        summary_caring_soup = connect(summary_caring_url)
         summary_caring = summary_caring_soup.find('h2', text=re.compile('Caring')).find_next('div').text.strip()
 
     summary_responsive_url = ''
@@ -164,20 +183,21 @@ for row in csv_file:
         pass
     summary_responsive = ''
     if summary_responsive_url:
-        summary_responsive_page = urllib2.urlopen(summary_responsive_url)
-        summary_responsive_soup = BeautifulSoup(summary_responsive_page, 'lxml')
+        # summary_responsive_page = urllib2.urlopen(summary_responsive_url)
+        # summary_responsive_soup = BeautifulSoup(summary_responsive_page, 'lxml')
+        summary_responsive_soup = connect(summary_responsive_url)
         summary_responsive = summary_responsive_soup.find('h2', text=re.compile('Responsive')).find_next('div').text.strip()
 
     summary_well_led_url = ''
     try:
-        summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Well_led'))['href']
+        summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Well-led'))['href']
     except:
         pass
     summary_well_led = ''
     if summary_well_led_url:
         summary_well_led_page = urllib2.urlopen(summary_well_led_url)
         summary_well_led_soup = BeautifulSoup(summary_well_led_page, 'lxml')
-        summary_well_led = summary_well_led_soup.find('h2', text=re.compile('Well_led')).find_next('div').text.strip()
+        summary_well_led = summary_well_led_soup.find('h2', text=re.compile('Well-led')).find_next('div').text.strip()
 
     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": unicode(location_url), "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
                                                      "type_of_service": unicode(type_of_service), "services": unicode(services), "local_authority": unicode(local_authority), "latest_report": unicode(latest_report), "reports_url": unicode(reports_url),
@@ -187,3 +207,6 @@ for row in csv_file:
                                                      "summary_well_led": unicode(summary_well_led)
                                                      })
     p+=1
+
+
+
