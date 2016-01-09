@@ -12,7 +12,7 @@ import re
 
 directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
 html = urllib2.urlopen(directoryUrl)
-soup = BeautifulSoup(html)
+soup = BeautifulSoup(html, 'lxml')
 
 block = soup.find('div',{'id':'directory'})
 csvA = block.find('a',href=True)
@@ -39,10 +39,10 @@ for row in csv_file:
     local_authority = row[11]
     print name, location_url
     report_html = urllib2.urlopen(location_url)
-    report_soup = BeautifulSoup(report_html)
+    report_soup = BeautifulSoup(report_html, 'lxml')
     latest_report_url = location_url+'/reports'
     latest_report_html = urllib2.urlopen(latest_report_url)
-    latest_report_soup = BeautifulSoup(latest_report_html)
+    latest_report_soup = BeautifulSoup(latest_report_html, 'lxml')
     latest_report = ''
     try:
         latest_report = latest_report_soup.find('h2', text=re.compile('Reports')).find_next('div').text.strip()
