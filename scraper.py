@@ -95,7 +95,7 @@ for row in csv_file:
         pass
     overview_safe = ''
     try:
-        overview_safe = report_soup.find('a', text=re.compile('Safe')).find_next('span').text.strip()
+        overview_safe = report_soup.find('a', text=re.compile('\\bSafe\\b')).find_next('span').text.strip()
     except:
         pass
     overview_effective = ''
@@ -141,7 +141,7 @@ for row in csv_file:
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
-        summary_safe_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Safe'))['href']
+        summary_safe_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']
     except:
         pass
     summary_safe = ''
@@ -149,7 +149,7 @@ for row in csv_file:
         # summary_safe_page = urllib2.urlopen(summary_safe_url)
         # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
         summary_safe_soup = connect(summary_safe_url)
-        summary_safe = summary_safe_soup.find('h2', text=re.compile('Safe')).find_next('div').text.strip()
+        summary_safe = summary_safe_soup.find('h2', text=re.compile('\\bSafe\\b')).find_next('div').text.strip()
     summary_effective_url = ''
     try:
         summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Effective'))['href']
