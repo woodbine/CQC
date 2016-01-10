@@ -8,13 +8,14 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import csv
 import re
+import requests
 
 
 def connect(url):
     report_soup = ''
     try:
-        report_html = urllib2.urlopen(url)
-        report_soup = BeautifulSoup(report_html, 'lxml')
+        report_html = requests.get(url,  timeout=(90, 90))
+        report_soup = BeautifulSoup(report_html.text, 'lxml')
     except:
         connect(url)
     if not report_soup:
