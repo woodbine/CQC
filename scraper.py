@@ -188,7 +188,7 @@ for row in csv_file:
 
     summary_well_led_url = ''
     try:
-        summary_well_led_url = 'http://www.cqc.org.uk'+find('div', 'overview-inspections').find('a', text=re.compile('Well-led'))['href']
+        summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Well-led'))['href']
     except:
         pass
     print summary_well_led_url
