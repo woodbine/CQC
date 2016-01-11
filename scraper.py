@@ -191,6 +191,7 @@ for row in csv_file:
         summary_well_led_url = 'http://www.cqc.org.uk'+find('div', 'overview-inspections').report_soup.find('a', text=re.compile('Well-led'))['href']
     except:
         pass
+    print summary_well_led_url
     summary_well_led = ''
     if summary_well_led_url:
         summary_well_led_soup = connect(summary_well_led_url)
