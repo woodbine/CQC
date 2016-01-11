@@ -144,12 +144,13 @@ for row in csv_file:
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
-        safe = report_soup.find('a', text=re.compile('Safe'))['href']
+        safe = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Safe'))['href']
         if 'provider' in safe:
             continue
         summary_safe_url = 'http://www.cqc.org.uk'+safe
     except:
         pass
+    print summary_safe_url
     summary_safe = ''
     if summary_safe_url:
         # summary_safe_page = urllib2.urlopen(summary_safe_url)
