@@ -98,27 +98,27 @@ for row in csv_file:
         safe = report_soup.find('a', text=re.compile('Safe'))['href']
         if 'provider' in safe:
             continue
-        overview_safe = report_soup.find('a', text=re.compile('Safe')).find_next('span').text.strip()
+        overview_safe = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Safe')).find_next('span').text.strip()
     except:
         pass
     overview_effective = ''
     try:
-        overview_effective = report_soup.find('a', text=re.compile('Effective')).find_next('span').text.strip()
+        overview_effective = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Effective')).find_next('span').text.strip()
     except:
         pass
     overview_caring = ''
     try:
-         overview_caring = report_soup.find('a', text=re.compile('Caring')).find_next('span').text.strip()
+         overview_caring = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Caring')).find_next('span').text.strip()
     except:
         pass
     overview_responsive = ''
     try:
-        overview_responsive = report_soup.find('a', text=re.compile('Responsive')).find_next('span').text.strip()
+        overview_responsive = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Responsive')).find_next('span').text.strip()
     except:
         pass
     overview_well_led = ''
     try:
-        overview_well_led = report_soup.find('a', text=re.compile('Well-led')).find_next('span').text.strip()
+        overview_well_led = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Well-led')).find_next('span').text.strip()
     except:
         pass
     run_by = ''
@@ -133,13 +133,11 @@ for row in csv_file:
         pass
     overview_summary_url = ''
     try:
-        overview_summary_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Read overall summary'))['href']
+        overview_summary_url = 'http://www.cqc.org.uk'+report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Read overall summary'))['href']
     except:
         pass
     overview_summary = ''
     if overview_summary_url:
-        # overview_summary_page = urllib2.urlopen(overview_summary_url)
-        # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
         overview_summary_soup = connect(overview_summary_url)
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
@@ -153,58 +151,49 @@ for row in csv_file:
     print summary_safe_url
     summary_safe = ''
     if summary_safe_url:
-        # summary_safe_page = urllib2.urlopen(summary_safe_url)
-        # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
         summary_safe_soup = connect(summary_safe_url)
         summary_safe = summary_safe_soup.find('h2', text=re.compile('Safe')).find_next('div').text.strip()
     summary_effective_url = ''
     try:
-        summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Effective'))['href']
+        summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Effective'))['href']
     except:
         pass
     print summary_effective_url
     summary_effective = ''
     if summary_effective_url:
-        # summary_effective_page = urllib2.urlopen(summary_effective_url)
-        # summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
         summary_effective_soup =connect(summary_effective_url)
         summary_effective = summary_effective_soup.find('h2', text=re.compile('Effective')).find_next('div').text.strip()
 
     summary_caring_url = ''
     try:
-        caring_url_check = report_soup.find('a', text=re.compile('Caring'))['href']
+        caring_url_check = report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Caring'))['href']
         if '#caring' in caring_url_check:
-            summary_caring_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Caring'))['href']
+            summary_caring_url = 'http://www.cqc.org.uk'+report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Caring'))['href']
     except:
         pass
     summary_caring = ''
     if summary_caring_url:
-        # summary_caring_page = urllib2.urlopen(summary_caring_url)
-        # summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
         summary_caring_soup = connect(summary_caring_url)
         summary_caring = summary_caring_soup.find('h2', text=re.compile('Caring')).find_next('div').text.strip()
 
     summary_responsive_url = ''
     try:
-        summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Responsive'))['href']
+        summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('div', 'overview-inspections').find('a', text=re.compile('Responsive'))['href']
     except:
         pass
     summary_responsive = ''
     if summary_responsive_url:
-        # summary_responsive_page = urllib2.urlopen(summary_responsive_url)
-        # summary_responsive_soup = BeautifulSoup(summary_responsive_page, 'lxml')
         summary_responsive_soup = connect(summary_responsive_url)
         summary_responsive = summary_responsive_soup.find('h2', text=re.compile('Responsive')).find_next('div').text.strip()
 
     summary_well_led_url = ''
     try:
-        summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Well-led'))['href']
+        summary_well_led_url = 'http://www.cqc.org.uk'+find('div', 'overview-inspections').report_soup.find('a', text=re.compile('Well-led'))['href']
     except:
         pass
     summary_well_led = ''
     if summary_well_led_url:
-        summary_well_led_page = urllib2.urlopen(summary_well_led_url)
-        summary_well_led_soup = BeautifulSoup(summary_well_led_page, 'lxml')
+        summary_well_led_soup = connect(summary_well_led_url)
         summary_well_led = summary_well_led_soup.find('h2', text=re.compile('Well-led')).find_next('div').text.strip()
 
     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": unicode(location_url), "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
