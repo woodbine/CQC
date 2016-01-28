@@ -11,11 +11,13 @@ import re
 
 
 def connect(url):
+    print url
     report_soup = ''
     try:
         report_html = urllib2.urlopen(url)
         report_soup = BeautifulSoup(report_html, 'lxml')
     except:
+        print url
         connect(url)
     if not report_soup:
         connect(url)
@@ -35,6 +37,7 @@ response = urllib2.urlopen(csvUrl)
 csv_file = csv.reader(response)
 p = 0
 for row in csv_file:
+
     if 'http' not in row[12]:
         continue
     print p
@@ -50,7 +53,7 @@ for row in csv_file:
     services = row[8]
     local_authority = row[11]
     cqc_id = row[14]
-    #print name, cqc_id
+    print name, cqc_id
     # report_html = urllib2.urlopen(location_url)
     # report_soup = BeautifulSoup(report_html)
     report_soup = connect(location_url)
@@ -71,7 +74,10 @@ for row in csv_file:
     if 'pdf' not in reports_url:
         reports_url = ''
         try:
-            reports_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Read CQC inspection report online'))['href']
+            if 'http' not in report_soup.find('a', text=re.compile('Read CQC inspection report online'))['href']:
+                reports_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Read CQC inspection report online'))['href']
+            else:
+                reports_url = report_soup.find('a', text=re.compile('Read CQC inspection report online'))['href']
         except:
             pass
     report_date = ''
@@ -94,17 +100,17 @@ for row in csv_file:
         pass
     overview_safe = ''
     try:
-        overview_safe = report_soup.find('a', text=re.compile('Safe')).find_next('span').text.strip()
+        overview_safe = report_soup.find('a', text=re.compile('\\bSafe\\b')).find_next('span').text.strip()
     except:
         pass
     overview_effective = ''
     try:
-        overview_effective = report_soup.find('a', text=re.compile('Effective')).find_next('span').text.strip()
+        overview_effective = report_soup.find('a', text=re.compile('\\bEffective\\b')).find_next('span').text.strip()
     except:
         pass
     overview_caring = ''
     try:
-         overview_caring = report_soup.find('a', text=re.compile('Caring')).find_next('span').text.strip()
+         overview_caring = report_soup.find('a', text=re.compile('\\bCaring\\b')).find_next('span').text.strip()
     except:
         pass
     overview_responsive = ''
@@ -124,12 +130,18 @@ for row in csv_file:
         pass
     run_by_url = ''
     try:
-        run_by_url = 'http://www.cqc.org.uk'+report_soup.find('h3', text=re.compile('Who runs this service')).find_next('p').find('a')['href']
+        if 'http' not in report_soup.find('h3', text=re.compile('Who runs this service')).find_next('p').find('a')['href']:
+            run_by_url = 'http://www.cqc.org.uk'+report_soup.find('h3', text=re.compile('Who runs this service')).find_next('p').find('a')['href']
+        else:
+            run_by_url = report_soup.find('h3', text=re.compile('Who runs this service')).find_next('p').find('a')['href']
     except:
         pass
     overview_summary_url = ''
     try:
-        overview_summary_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Read overall summary'))['href']
+        if 'http' not in report_soup.find('a', text=re.compile('Read overall summary'))['href']:
+            overview_summary_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Read overall summary'))['href']
+        else:
+            overview_summary_url = report_soup.find('a', text=re.compile('Read overall summary'))['href']
     except:
         pass
     overview_summary = ''
@@ -140,7 +152,10 @@ for row in csv_file:
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
-        summary_safe_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Safe'))['href']
+        if 'http' not in report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']:
+            summary_safe_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']
+        else:
+            summary_safe_url = report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']
     except:
         pass
     summary_safe = ''
@@ -148,25 +163,31 @@ for row in csv_file:
         # summary_safe_page = urllib2.urlopen(summary_safe_url)
         # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
         summary_safe_soup = connect(summary_safe_url)
-        summary_safe = summary_safe_soup.find('h2', text=re.compile('Safe')).find_next('div').text.strip()
+        summary_safe = summary_safe_soup.find('h2', text=re.compile('\\bSafe\\b')).find_next('div').text.strip()
     summary_effective_url = ''
     try:
-        summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Effective'))['href']
+        if 'http' not in report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']:
+            summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']
+        else:
+            summary_effective_url = report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']
     except:
         pass
-    #print summary_effective_url
+    # print summary_effective_url
     summary_effective = ''
     if summary_effective_url:
         # summary_effective_page = urllib2.urlopen(summary_effective_url)
         # summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
         summary_effective_soup =connect(summary_effective_url)
-        summary_effective = summary_effective_soup.find('h2', text=re.compile('Effective')).find_next('div').text.strip()
+        summary_effective = summary_effective_soup.find('h2', text=re.compile('\\bEffective\\b')).find_next('div').text.strip()
 
     summary_caring_url = ''
     try:
-        caring_url_check = report_soup.find('a', text=re.compile('Caring'))['href']
+        caring_url_check = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
         if '#caring' in caring_url_check:
-            summary_caring_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Caring'))['href']
+            if 'http' not in report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']:
+                summary_caring_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
+            else:
+                summary_caring_url = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
     except:
         pass
     summary_caring = ''
@@ -174,11 +195,14 @@ for row in csv_file:
         # summary_caring_page = urllib2.urlopen(summary_caring_url)
         # summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
         summary_caring_soup = connect(summary_caring_url)
-        summary_caring = summary_caring_soup.find('h2', text=re.compile('Caring')).find_next('div').text.strip()
+        summary_caring = summary_caring_soup.find('h2', text=re.compile('\\bCaring\\b')).find_next('div').text.strip()
 
     summary_responsive_url = ''
     try:
-        summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Responsive'))['href']
+        if 'http' not in report_soup.find('a', text=re.compile('Responsive'))['href']:
+            summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Responsive'))['href']
+        else:
+            summary_responsive_url = report_soup.find('a', text=re.compile('Responsive'))['href']
     except:
         pass
     summary_responsive = ''
@@ -190,7 +214,10 @@ for row in csv_file:
 
     summary_well_led_url = ''
     try:
-        summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Well-led'))['href']
+        if 'http' not in report_soup.find('a', text=re.compile('Well-led'))['href']:
+            summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Well-led'))['href']
+        else:
+            summary_well_led_url = report_soup.find('a', text=re.compile('Well-led'))['href']
     except:
         pass
     summary_well_led = ''
