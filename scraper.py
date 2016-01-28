@@ -35,8 +35,7 @@ response = urllib2.urlopen(csvUrl)
 csv_file = csv.reader(response)
 p = 0
 for row in csv_file:
-
-    if 'https://' not in row[12]:
+    if 'http' not in row[12]:
         continue
     print p
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
@@ -155,7 +154,7 @@ for row in csv_file:
         summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Effective'))['href']
     except:
         pass
-    print summary_effective_url
+    #print summary_effective_url
     summary_effective = ''
     if summary_effective_url:
         # summary_effective_page = urllib2.urlopen(summary_effective_url)
