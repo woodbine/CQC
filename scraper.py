@@ -11,13 +11,13 @@ import re
 
 
 def connect(url):
-    print url
+    # print url
     report_soup = ''
     try:
         report_html = urllib2.urlopen(url)
         report_soup = BeautifulSoup(report_html, 'lxml')
     except:
-        print url
+        # print url
         connect(url)
     if not report_soup:
         connect(url)
@@ -53,7 +53,7 @@ for row in csv_file:
     services = row[8]
     local_authority = row[11]
     cqc_id = row[14]
-    print name, cqc_id
+    # print name, cqc_id
     # report_html = urllib2.urlopen(location_url)
     # report_soup = BeautifulSoup(report_html)
     report_soup = connect(location_url)
