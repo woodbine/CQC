@@ -150,6 +150,7 @@ for row in csv_file:
         # overview_summary_page = urllib2.urlopen(overview_summary_url)
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
         overview_summary_soup = connect(overview_summary_url)
+        print overview_summary_soup
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
