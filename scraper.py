@@ -42,6 +42,7 @@ for row in csv_file:
         continue
     print p
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
+    print location_url
     name = row[0]
     add1 = ' '.join(row[2].split(',')[:-1])
     add2 = row[2].split(',')[-1]
