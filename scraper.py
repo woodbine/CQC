@@ -149,8 +149,9 @@ for row in csv_file:
     if overview_summary_url:
         # overview_summary_page = urllib2.urlopen(overview_summary_url)
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
+        print overview_summary_url
         overview_summary_soup = connect(overview_summary_url)
-        print overview_summary_soup
+        print overview_summary_soup.title
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
