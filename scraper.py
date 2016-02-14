@@ -8,16 +8,16 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import csv
 import re
-
+import requests
 
 def connect(url):
-    # print url
+    print url
     report_soup = ''
     try:
-        report_html = urllib2.urlopen(url)
-        report_soup = BeautifulSoup(report_html, 'lxml')
+        report_html = requests.get(url)
+        report_soup = BeautifulSoup(report_html.text, 'lxml')
     except:
-        # print url
+        print url
         connect(url)
     if not report_soup:
         connect(url)
@@ -37,12 +37,10 @@ response = urllib2.urlopen(csvUrl)
 csv_file = csv.reader(response)
 p = 0
 for row in csv_file:
-
     if 'http' not in row[12]:
         continue
     print p
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
-    print location_url
     name = row[0]
     add1 = ' '.join(row[2].split(',')[:-1])
     add2 = row[2].split(',')[-1]
@@ -54,7 +52,7 @@ for row in csv_file:
     services = row[8]
     local_authority = row[11]
     cqc_id = row[14]
-    # print name, cqc_id
+    print name, cqc_id
     # report_html = urllib2.urlopen(location_url)
     # report_soup = BeautifulSoup(report_html)
     report_soup = connect(location_url)
@@ -149,9 +147,7 @@ for row in csv_file:
     if overview_summary_url:
         # overview_summary_page = urllib2.urlopen(overview_summary_url)
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
-        print overview_summary_url
         overview_summary_soup = connect(overview_summary_url)
-        print overview_summary_soup.title
         overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
     summary_safe_url = ''
     try:
@@ -162,11 +158,14 @@ for row in csv_file:
     except:
         pass
     summary_safe = ''
-    if summary_safe_url:
+    if summary_safe_url and '#safe' in summary_safe_url:
         # summary_safe_page = urllib2.urlopen(summary_safe_url)
         # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
         summary_safe_soup = connect(summary_safe_url)
-        summary_safe = summary_safe_soup.find('h2', text=re.compile('\\bSafe\\b')).find_next('div').text.strip()
+        try:
+            summary_safe = summary_safe_soup.find('h2', text=re.compile('\\bSafe\\b')).find_next('div').text.strip()
+        except:
+            summary_safe = ''
     summary_effective_url = ''
     try:
         if 'http' not in report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']:
@@ -225,8 +224,7 @@ for row in csv_file:
         pass
     summary_well_led = ''
     if summary_well_led_url:
-        summary_well_led_page = urllib2.urlopen(summary_well_led_url)
-        summary_well_led_soup = BeautifulSoup(summary_well_led_page, 'lxml')
+        summary_well_led_soup = connect(summary_well_led_url)
         summary_well_led = summary_well_led_soup.find('h2', text=re.compile('Well-led')).find_next('div').text.strip()
 
     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": unicode(location_url), "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
