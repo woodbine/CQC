@@ -206,10 +206,10 @@ for row in csv_file:
 
     summary_responsive_url = ''
     try:
-        if 'http' not in report_soup.find('a', text=re.compile('Responsive'))['href']:
-            summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Responsive'))['href']
+        if 'http' not in report_soup.find('a', text=re.compile('\\bResponsive\\b'))['href']:
+            summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bResponsive\\b'))['href']
         else:
-            summary_responsive_url = report_soup.find('a', text=re.compile('Responsive'))['href']
+            summary_responsive_url = report_soup.find('a', text=re.compile('\\bResponsive\\b'))['href']
     except:
         pass
     summary_responsive = ''
@@ -217,8 +217,11 @@ for row in csv_file:
         # summary_responsive_page = urllib2.urlopen(summary_responsive_url)
         # summary_responsive_soup = BeautifulSoup(summary_responsive_page, 'lxml')
         summary_responsive_soup = connect(summary_responsive_url)
-        summary_responsive = summary_responsive_soup.find('h2', text=re.compile('Responsive')).find_next('div').text.strip()
-
+        summary_responsive = ''
+        try:
+            summary_responsive = summary_responsive_soup.find('h2', text=re.compile('\\bResponsive\\b')).find_next('div').text.strip()
+        except:
+            pass
     summary_well_led_url = ''
     try:
         if 'http' not in report_soup.find('a', text=re.compile('Well-led'))['href']:
