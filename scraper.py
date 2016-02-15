@@ -20,13 +20,14 @@ def connect(url):
         print url
         # connect(url)
     while not report_soup:
-        report_html = ''
+        report_soup = ''
         try:
             report_html = requests.get(url, timeout = 60)
+            report_soup = BeautifulSoup(report_html.text, 'lxml')
+            print report_soup.title
         except:
             pass  
-        report_soup = BeautifulSoup(report_html.text, 'lxml')
-        print report_soup.title
+
     return report_soup
 
 directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
