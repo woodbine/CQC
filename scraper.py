@@ -14,15 +14,16 @@ def connect(url):
     
     report_soup = ''
     try:
-        report_html = requests.get(url)
+        report_html = requests.get(url, timeout = 60)
         report_soup = BeautifulSoup(report_html.text, 'lxml')
     except:
         print url
-        connect(url)
-    if not report_soup:
-        connect(url)
-    else:
-        return report_soup
+        # connect(url)
+    while not report_soup:
+        report_html = requests.get(url)
+        report_soup = BeautifulSoup(report_html.text, 'lxml')
+        print report_soup.title
+    return report_soup
 
 directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
 # html = urllib2.urlopen(directoryUrl)
