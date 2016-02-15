@@ -20,7 +20,11 @@ def connect(url):
         print url
         # connect(url)
     while not report_soup:
-        report_html = requests.get(url)
+        report_html = ''
+        try:
+            report_html = requests.get(url, timeout = 60)
+        except:
+            pass  
         report_soup = BeautifulSoup(report_html.text, 'lxml')
         print report_soup.title
     return report_soup
