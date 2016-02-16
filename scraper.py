@@ -154,7 +154,10 @@ for row in csv_file:
         # overview_summary_page = urllib2.urlopen(overview_summary_url)
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
         overview_summary_soup = connect(overview_summary_url)
-        overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
+        try:
+            overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
+        except:
+            overview_summary = '
     summary_safe_url = ''
     try:
         if 'http' not in report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']:
@@ -186,8 +189,10 @@ for row in csv_file:
         # summary_effective_page = urllib2.urlopen(summary_effective_url)
         # summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
         summary_effective_soup =connect(summary_effective_url)
-        summary_effective = summary_effective_soup.find('h2', text=re.compile('\\bEffective\\b')).find_next('div').text.strip()
-
+        try:
+            summary_effective = summary_effective_soup.find('h2', text=re.compile('\\bEffective\\b')).find_next('div').text.strip()
+        except:
+            summary_effective = '
     summary_caring_url = ''
     try:
         caring_url_check = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
@@ -203,8 +208,10 @@ for row in csv_file:
         # summary_caring_page = urllib2.urlopen(summary_caring_url)
         # summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
         summary_caring_soup = connect(summary_caring_url)
-        summary_caring = summary_caring_soup.find('h2', text=re.compile('\\bCaring\\b')).find_next('div').text.strip()
-
+        try:
+            summary_caring = summary_caring_soup.find('h2', text=re.compile('\\bCaring\\b')).find_next('div').text.strip()
+        except:
+             summary_caring = ''
     summary_responsive_url = ''
     try:
         if 'http' not in report_soup.find('a', text=re.compile('\\bResponsive\\b'))['href']:
@@ -234,8 +241,10 @@ for row in csv_file:
     summary_well_led = ''
     if summary_well_led_url:
         summary_well_led_soup = connect(summary_well_led_url)
-        summary_well_led = summary_well_led_soup.find('h2', text=re.compile('Well-led')).find_next('div').text.strip()
-
+        try:
+            summary_well_led = summary_well_led_soup.find('h2', text=re.compile('Well-led')).find_next('div').text.strip()
+        except:
+            summary_well_led = ''
     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": unicode(location_url), "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
                                                      "CQC_ID": cqc_id, "type_of_service": unicode(type_of_service), "services": unicode(services), "local_authority": unicode(local_authority), "latest_report": unicode(latest_report), "reports_url": unicode(reports_url),
                                                      "report_date": unicode(report_date), "overview": unicode(overview), "overview_description": unicode(overview_description), "overview_safe": unicode(overview_safe), "overview_effective": unicode(overview_effective),
