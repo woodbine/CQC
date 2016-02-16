@@ -157,7 +157,7 @@ for row in csv_file:
         try:
             overview_summary = overview_summary_soup.find('h2', text=re.compile('Overall summary & rating')).find_next('div').text.strip()
         except:
-            overview_summary = '
+            overview_summary = ''
     summary_safe_url = ''
     try:
         if 'http' not in report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']:
@@ -192,7 +192,7 @@ for row in csv_file:
         try:
             summary_effective = summary_effective_soup.find('h2', text=re.compile('\\bEffective\\b')).find_next('div').text.strip()
         except:
-            summary_effective = '
+            summary_effective = ''
     summary_caring_url = ''
     try:
         caring_url_check = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
